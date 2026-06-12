@@ -20,7 +20,6 @@
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/queue.h"
 #include "driver/uart.h"
 #include "streamparser.h"
 #include <atomic>
@@ -43,7 +42,6 @@ class RadioModuleConnector {
   BinaryOutput *_reset;
   StreamParser *_streamParser;
   std::atomic<FrameHandler *> _frameHandler = ATOMIC_VAR_INIT(0);
-  QueueHandle_t _uart_queue;
   uart_port_t _uart_num;
   TaskHandle_t _tHandle{nullptr};
   uint8_t *_buffer{nullptr};
@@ -52,7 +50,7 @@ class RadioModuleConnector {
   void _handleFrame(unsigned char *buffer, uint16_t len);
 
  public:
-  RadioModuleConnector(BinaryOutput *reset, QueueHandle_t *uart_queue, uart_port_t uart_num, size_t buffer_size);
+  RadioModuleConnector(BinaryOutput *reset, uart_port_t uart_num, size_t buffer_size);
 
   void start();
   void stop();

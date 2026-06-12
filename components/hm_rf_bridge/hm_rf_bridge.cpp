@@ -11,9 +11,9 @@ namespace esphome::hm_rf_bridge {
 
 void HmRFBridge::setup() {
   ESP_LOGD(TAG, "setup started");
-  this->radioModuleConnector_ = new RadioModuleConnector(this->reset_, this->uart_->get_uart_event_queue(),
+  this->radioModuleConnector_ = new RadioModuleConnector(this->reset_,
                                                          static_cast<uart_port_t>(this->uart_->get_hw_serial_number()),
-                                                         this->uart_->get_rx_buffer_size());
+                                                         256);
 
   radioModuleConnector_->addLed(this->red_, this->green_, this->blue_);
 

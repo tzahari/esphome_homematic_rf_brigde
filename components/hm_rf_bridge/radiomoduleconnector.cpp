@@ -27,9 +27,8 @@ static const char *TAG = "RadioModuleConnector";
 
 void serialQueueHandlerTask(void *parameter) { ((RadioModuleConnector *) parameter)->_serialQueueHandler(); }
 
-RadioModuleConnector::RadioModuleConnector(BinaryOutput *reset, QueueHandle_t *uart_queue, uart_port_t uart_num,
-                                           size_t buffer_size)
-    : _reset(reset), _uart_queue(*uart_queue), _uart_num(uart_num), _buffer_size(buffer_size) {
+RadioModuleConnector::RadioModuleConnector(BinaryOutput *reset, uart_port_t uart_num, size_t buffer_size)
+    : _reset(reset), _uart_num(uart_num), _buffer_size(buffer_size) {
   using namespace std::placeholders;
   _streamParser = new StreamParser(false, std::bind(&RadioModuleConnector::_handleFrame, this, _1, _2));
 }
@@ -64,32 +63,14 @@ void RadioModuleConnector::sendFrame(unsigned char *buffer, uint16_t len) {
 }
 
 void RadioModuleConnector::_serialQueueHandler() {
-  uart_event_t event;
   uint8_t *buffer = (uint8_t *) malloc(this->_buffer_size);
 
   uart_flush_input(_uart_num);
 
   for (;;) {
-    if (xQueueReceive(_uart_queue, (void *) &event, (TickType_t) portMAX_DELAY)) {
-      switch (event.type) {
-        case UART_DATA:
-          uart_read_bytes(_uart_num, buffer, event.size, portMAX_DELAY);
-          _streamParser->append(buffer, event.size);
-          break;
-        case UART_FIFO_OVF:
-        case UART_BUFFER_FULL:
-          uart_flush_input(_uart_num);
-          xQueueReset(_uart_queue);
-          _streamParser->flush();
-          break;
-        case UART_BREAK:
-        case UART_PARITY_ERR:
-        case UART_FRAME_ERR:
-          _streamParser->flush();
-          break;
-        default:
-          break;
-      }
+    int len = uart_read_bytes(_uart_num, buffer, this->_buffer_size, pdMS_TO_TICKS(20));
+    if (len > 0) {
+      _streamParser->append(buffer, len);
     }
   }
 
