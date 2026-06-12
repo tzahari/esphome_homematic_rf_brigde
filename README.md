@@ -63,7 +63,7 @@ Leds nur bei RPI‑RF‑MOD
 
 ```yaml
 hm_rf_bridge:
-  uart_id: uart_hm
+  uart_id: hm_uart
   reset_output: reset_pin
   red_led: red_led
   green_led: green_led
