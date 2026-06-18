@@ -1,0 +1,96 @@
+esphome:
+  name: hm-rf-eth
+  friendly_name: hm-rf-eth
+  on_boot:
+    then:
+      - output.turn_on: pwr_led
+
+esp32:
+  board: esp32dev
+  variant: esp32
+  framework:
+    type: esp-idf
+    advanced:
+      sram1_as_iram: true
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+# Allow Over-The-Air updates
+ota:
+  - platform: esphome
+
+ethernet:
+  type: LAN8720
+  mdc_pin: GPIO32
+  mdio_pin: GPIO33
+  clk:
+    pin: GPIO17
+    mode: CLK_OUT
+  phy_addr: 0
+  power_pin: GPIO13
+
+external_components:
+  - source:
+      type: local
+      path: ../components
+
+hm_rf_bridge:
+  uart_id: hm_uart
+  reset_output: reset_pin
+  red_led: red_led
+  green_led: green_led
+  blue_led: blue_led
+  connected:
+    name: "CCU Connected"
+    id: ccu_connected
+    on_state:
+      - if:
+          condition:
+            lambda: return x;
+          then:
+            - output.turn_on: status_led
+          else:
+            - output.turn_off: status_led
+  radio_module_type:
+    name: HM Radio Module Type
+  firmware_version:
+    name: "HM Module Firmware Version"
+  serial:
+    name: "HM Module Serial"
+  SGTIN:
+    name: "HM Module SGTIN"
+
+output:
+  # Reset line to the radio module (active = HIGH on the HB-RF-ETH!)
+  - platform: gpio
+    pin: GPIO23
+    id: reset_pin
+
+  # RGB LED of the RPI-RF-MOD
+  - platform: ledc
+    pin: GPIO15
+    id: red_led
+  - platform: ledc
+    pin: GPIO14
+    id: green_led
+  - platform: ledc
+    pin: GPIO12
+    id: blue_led
+
+  # Onboard LEDs of the board (optional, freely usable)
+  - platform: ledc
+    pin: GPIO16
+    id: pwr_led
+  - platform: ledc
+    pin: GPIO4
+    id: status_led
+
+uart:
+  id: hm_uart
+  tx_pin: GPIO2
+  rx_pin: GPIO35
+  baud_rate: 115200
