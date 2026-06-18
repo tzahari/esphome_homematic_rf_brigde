@@ -1,18 +1,19 @@
 # **ESPHome Homematic RF Bridge (HB‑RF‑ETH Port)**
 
+[English version](README_EN.md)
+
 Dieses Projekt portiert die **HB‑RF‑ETH‑Firmware** auf **ESPHome** und erlaubt den Betrieb von Homematic‑Funkmodulen wie **HM‑MOD‑RPI‑PCB** oder **RPI‑RF‑MOD** auf einem ESPHome‑basierten ESP32‑Gateway – eingebunden als External ESPHome Component.
 
 ---
 
-##  Kompatibilität
-
-Diese External Component ist kompitable bis **ESPHome 2026.1**
+## Kompatibilität
 
 Erfolgreich auf einem WT32‑ETH01 getestet und auf dem ESP32‑basierten Zigbee‑Gateway ZB‑GW03 produktiv im Einsatz.
+Es funktioniert auch mit der Beispieldatei auf dem [HB-RF-ETH Platine](https://github.com/alexreinert/PCB).
 
 ---
 
-##  Installation & Nutzung
+## Installation & Nutzung
 
 ### 1. External Component einbinden
 
@@ -34,7 +35,7 @@ uart:
 ```
 ---
 
-### 3 Reset und Led Outputs konfigurieren
+### 3. Reset und LED-Outputs konfigurieren
 
 ```yaml
 output:
@@ -55,7 +56,8 @@ output:
     pin: GPIO32
     id: red_led
 ```
-Leds nur bei RPI‑RF‑MOD
+
+LEDs nur beim RPI‑RF‑MOD erforderlich.
 
 ---
 
@@ -79,7 +81,8 @@ hm_rf_bridge:
   SGTIN:
     name: "HM Module SGTIN"
 ```
-Leds und Sensoren sind optional
+
+LEDs und Sensoren sind optional.
 
 ---
 
@@ -95,11 +98,10 @@ mdns:
 
 ---
 
-##  Wokwiki simulation
+## Wokwi-Simulation
 
-Unter **examples/wokwi** liegt ein komplettes Wokwi‑Projekt, mit dem sich die Firmware direkt simulieren lässt. Zusätzlich enthält der Ordner eine Simulation des Homematic‑Funkmoduls, sodass UART‑Kommunikation ohne echte Hardware getestet werden kann. 
+Unter **examples/wokwi-sim** liegt ein komplettes Wokwi‑Projekt, mit dem sich die Firmware direkt simulieren lässt. Zusätzlich enthält der Ordner eine Simulation des Homematic‑Funkmoduls, sodass UART‑Kommunikation ohne echte Hardware getestet werden kann.
 
+## Devcontainer
 
-##  Devcontainer
-
-Devcontainer mit  esphome und wasi-sdk(benötigt für wokwiki simulation)
+Devcontainer mit ESPHome und wasi-sdk (benötigt für die Wokwi-Simulation).
